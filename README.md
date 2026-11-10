@@ -12,9 +12,9 @@ By keeping this README up-to-date,
 your team will find it easier to prepare for the final presentation
 at the end of the term.
 
-# Workout Tracker
+# Project Name
 
-## CSC 207 Project
+## Team Information
 
 ### Team Members
 - Jirat
@@ -27,7 +27,8 @@ at the end of the term.
 
 ## Project Description
 
-### Health & Fitness
+### Domain
+
 A workout companion app that logs user exercises as well as having social capabilities.
 
 ---
