@@ -35,27 +35,59 @@ A workout companion app that logs user exercises as well as having social capabi
 
 ## User Stories
 
-### As a gym-goer, I want to log the exercises I did to look back on them later
-### As a user with a set routine, I want to save workout templates so that I do not have to re-log them every time I workout
-### As a beginner, I want to be able to search exercises by muscle group so I can find exercises I may not know about
-### As a user, I want to see other users workout plan and import their plan
-### As a follower of a user, I want to be able to see the user's workout history, plans, etc, so I may compare my workouts with them
-### As a user, I want to be notified when my friends complete a workout so it is encouraging for me
-### As a user, I want to unfollow a user so I do not get notified by their activities
-### As a user, I want to create goals for myself so that I can see my own progress and feel motivated to keep going to the gym
+### As a user, I want to register my account so that I can start using the app.
+### As a beginner, I want to be able to search exercises by filters so I can find exercises I didn't know existed.
+### As a regular user, I want to create a workout plan so I don't have to log the same exercises every time.
+### As a user, I want to be able to edit my workout plan so I don't have to create a new one each time.
+### As a user, I want to log my exercises to track my progress and look at my history.
+### As a user, I want to see my history and personal records so I can see my own growth and feel motivated to keep working out.
+### As a user with friends, I want to send my friends friend requests to check in on each other.
+### As a user, I want to be able to respond to friend requests so I can choose whether I want to stay in touch or not.
+### As a user, I want to copy my friend's workout plans so I can do the same exercises as my friends.
 
 ---
 
 ## Use Cases
 
-### Log workout
-### Create templates
-### Search exercise
-### Import workout from friends
-### Check friends history
-### Follow / Unfollow friends
-### Notify friend's workout completion
-### Set goals
+### Register an Account
+
+A new user picks a username, display name and password. The system checks that the username is free and the password is valid, creates the account, and logs them in.
+
+### Log In
+
+A registered user enters their username and password. If they're correct, the system logs them in and shows their workout plans.
+
+### Find an Exercise
+
+The user browses the exercise library, filters by name, muscle group or equipment, and opens an exercise to see its description, muscles worked, equipment and picture.
+
+### Create a Workout Plan
+
+The user starts a blank or preset plan, names it, adds exercises with target sets and reps, and saves it to their list of plans.
+
+### Edit a Workout Plan
+
+The user changes a plan's name, exercises or targets, or deletes the plan. Workouts already logged from it are kept unchanged.
+
+### Log a Workout
+
+The user starts a workout from a plan, records the weight and reps of each set (with a rest timer between sets), and finishes. The system saves the workout and shows a summary with any new personal records.
+
+### Review Workout History and Personal Records
+
+The user views their past workouts, newest first, and opens one to see its sets. Their profile shows total workouts and their heaviest lift for each exercise.
+
+### Send a Friend Request
+
+The user enters another user's username. If the request is allowed, the system records it as pending and shows it in the other user's requests.
+
+### Respond to a Friend Request
+
+The user views pending friend requests and accepts or declines each one. Accepting makes the two users friends, so they can see each other's profiles, plans and recent workouts.
+
+### Copy a Friend's Workout Plan
+
+The user opens a friend's profile and copies one of their plans. The system saves an independent copy to the user's own plans, named to show where it came from.
 
 ---
 
@@ -75,74 +107,72 @@ A workout companion app that logs user exercises as well as having social capabi
 
 ### User
 Instance Attributes:
+- UserID (UUID)
 - Username (String, unique)
+- Display Name (String)
 - Password (String)
-- Height (double, cm)
-- Weight (double, kg)
-- Age (int)
-- Following (List of usernames)
-- Followers (List of usernames)
+- Workout Plans (List of WorkoutPlan)
 - Workout History (List of Workout)
-- Templates (List of WorkoutTemplate)
-- Goals (List of Goal)
 
 ### Exercise
 Instance Attributes:
-- ID (String, from the WorkoutX API)
+- ExerciseID (String, from the WorkoutX API)
 - Name (String)
 - Description (String)
-- Muscle Group (MuscleGroup enum)
+- Main Muscle Group (MuscleGroup enum)
+- Muscles Worked (List of MuscleGroup)
 - Equipment (String)
-- Video URL (String)
+- Image URL (String, optional)
+
+### PlannedExercise
+Instance Attributes:
+- Exercise (Exercise)
+- Target Sets (int)
+- Target Reps (int)
+- Target Weight (double, kg, optional)
+
+### WorkoutPlan
+Instance Attributes:
+- WorkoutPlanID (UUID)
+- Name (String)
+- UserOwner ID (UUID)
+- Exercises (ordered List of PlannedExercise)
+- WorkoutCompleted (boolean) :: assuming that we're going with you just clicking complete after u finish the workout (no individual completion tracking)
+- Is Preset (boolean)
+- Copied From User ID (UUID, optional)
 
 ### ExerciseSet
 Instance Attributes:
-- Reps (int)
 - Weight (double, kg)
-- Is Warm-up (boolean)
+- Reps (int)
 
-### ExerciseEntry
+### LoggedExercise
 Instance Attributes:
 - Exercise (Exercise)
-- Sets (List of ExerciseSet)
+- Completed Sets (List of ExerciseSet)
 
 ### Workout
 Instance Attributes:
-- ID (String)
-- Owner (username)
-- Entries (List of ExerciseEntry)
-- Start Time (LocalDateTime)
-- End Time (LocalDateTime)
-- Notes (String)
-- Source Template (WorkoutTemplate, optional)
+- WorkoutID (UUID)
+- UserOwner ID (UUID)
+- Plan ID (UUID)
+- Plan Name (String)
+- Date (LocalDate)
+- Exercises (List of LoggedExercise)
 
-### WorkoutTemplate
+### FriendRequest
 Instance Attributes:
-- ID (String)
-- Name (String, e.g. "Push Day")
-- Owner (username)
-- Exercises (List of Exercise)
-- Default Sets (int)
-- Default Reps (int)
-- Is Public (boolean, whether followers can view and import it)
-- Imported From (username, optional)
+- FriendReqID (UUID)
+- Sender ID (UUID)
+- Target ID (UUID)
+- Status (RequestStatus enum: PENDING, ACCEPTED, DECLINED, CANCELLED)
+- Created At (Instant)
 
-### Goal
+### Friendship
 Instance Attributes:
-- ID (String)
-- Type (GoalType enum: STRENGTH, FREQUENCY, BODY_WEIGHT)
-- Target Value (double)
-- Exercise (Exercise, only for strength goals)
-- Deadline (LocalDate)
-- Is Completed (boolean)
-
-### Activity
-Instance Attributes:
-- ID (String)
-- Username (who did it)
-- Type (ActivityType enum: COMPLETED_WORKOUT, CREATED_TEMPLATE)
-- Workout (Workout, optional)
-- Timestamp (LocalDateTime)
+- User A (UUID, always the smaller of the two IDs)
+- User B (UUID, always the larger of the two IDs)
+- Since (Instant)
 
 ---
 
@@ -152,7 +182,7 @@ Name: WORKOUTX
 
 Documentation: https://workoutxapp.com/docs.html
 
-How we are using it: We are using the API to get exercises and videos of those exercises
+How we are using it: The user can select the exercises they want from the API and it provides back the corresponding description and video
 
 ---
 
