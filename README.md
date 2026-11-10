@@ -41,17 +41,20 @@ A workout companion app that logs user exercises as well as having social capabi
 ### As a follower of a user, I want to be able to see the user's workout history, plans, etc, so I may compare my workouts with them
 ### As a user, I want to be notified when my friends complete a workout so it is encouraging for me
 ### As a user, I want to unfollow a user so I do not get notified by their activities
+### As a user, I want to create goals for myself so that I can see my own progress and feel motivated to keep going to the gym
 
 ---
 
 ## Use Cases
 
 ### Log workout
-### Follow friends
-### Unfollow friends
-### Import workout from friends
-### Set goals
 ### Create templates
+### Search exercise
+### Import workout from friends
+### Check friends history
+### Follow / Unfollow friends
+### Notify friend's workout completion
+### Set goals
 
 ---
 
@@ -71,23 +74,74 @@ A workout companion app that logs user exercises as well as having social capabi
 
 ### User
 Instance Attributes:
-- Height
-- Age
-- Weight
+- Username (String, unique)
+- Password (String)
+- Height (double, cm)
+- Weight (double, kg)
+- Age (int)
+- Following (List of usernames)
+- Followers (List of usernames)
+- Workout History (List of Workout)
+- Templates (List of WorkoutTemplate)
+- Goals (List of Goal)
 
 ### Exercise
 Instance Attributes:
-- Name
-- Description
-- Muscle Group
-- Personal Record
+- ID (String, from the WorkoutX API)
+- Name (String)
+- Description (String)
+- Muscle Group (MuscleGroup enum)
+- Equipment (String)
+- Video URL (String)
+
+### ExerciseSet
+Instance Attributes:
+- Reps (int)
+- Weight (double, kg)
+- Is Warm-up (boolean)
+
+### ExerciseEntry
+Instance Attributes:
+- Exercise (Exercise)
+- Sets (List of ExerciseSet)
 
 ### Workout
 Instance Attributes:
-- Routine (list of exercises)
-- Start time
-- End time
-- Notes
+- ID (String)
+- Owner (username)
+- Entries (List of ExerciseEntry)
+- Start Time (LocalDateTime)
+- End Time (LocalDateTime)
+- Notes (String)
+- Source Template (WorkoutTemplate, optional)
+
+### WorkoutTemplate
+Instance Attributes:
+- ID (String)
+- Name (String, e.g. "Push Day")
+- Owner (username)
+- Exercises (List of Exercise)
+- Default Sets (int)
+- Default Reps (int)
+- Is Public (boolean, whether followers can view and import it)
+- Imported From (username, optional)
+
+### Goal
+Instance Attributes:
+- ID (String)
+- Type (GoalType enum: STRENGTH, FREQUENCY, BODY_WEIGHT)
+- Target Value (double)
+- Exercise (Exercise, only for strength goals)
+- Deadline (LocalDate)
+- Is Completed (boolean)
+
+### Activity
+Instance Attributes:
+- ID (String)
+- Username (who did it)
+- Type (ActivityType enum: COMPLETED_WORKOUT, CREATED_TEMPLATE)
+- Workout (Workout, optional)
+- Timestamp (LocalDateTime)
 
 ---
 
@@ -95,7 +149,7 @@ Instance Attributes:
 
 Name: WORKOUTX
 
-Description: https://workoutxapp.com/docs.html
+Documentation: https://workoutxapp.com/docs.html
 
 How we are using it: We are using the API to get exercises and videos of those exercises
 
