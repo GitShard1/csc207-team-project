@@ -48,3 +48,4 @@ Each member adds their own name after reading and agreeing to this contract. App
 
 - Jirat Lertbavornvuttikun
 - Demeng Chen
+- Hung Mai
