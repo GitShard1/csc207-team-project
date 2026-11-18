@@ -50,3 +50,4 @@ Each member adds their own name after reading and agreeing to this contract. App
 - Demeng Chen
 - Hung Mai
 - Amgalan Batkhuyag
+- Chuhang Sun
